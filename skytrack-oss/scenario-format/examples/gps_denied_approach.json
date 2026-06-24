@@ -1,0 +1,40 @@
+{
+  "scenario_version": "0.1.0",
+  "name": "GPS-denied approach",
+  "description": "Multirotor flies a waypoint route; GPS is denied mid-flight and it must reach the pad on inertial/visual nav alone.",
+  "seed": 1337,
+  "world": {
+    "origin": { "lat": 47.397742, "lon": 8.545594, "alt": 488.0 },
+    "environment": {
+      "wind": { "mean_mps": [2.0, 0.0, 0.0], "gust_mps": 1.5, "gust_period_s": 8.0 },
+      "gps_quality": "nominal",
+      "time_of_day_s": 43200
+    }
+  },
+  "agents": [
+    {
+      "id": "uav-1",
+      "body": "multirotor",
+      "start": { "position": [0, 0, 0], "heading_deg": 90 },
+      "mission": [
+        { "action": "takeoff", "target": [0, 0, 20] },
+        { "action": "goto", "target": [100, 0, 20], "speed_mps": 6 },
+        { "action": "goto", "target": [100, 80, 20], "speed_mps": 6 },
+        { "action": "land", "target": [100, 80, 0] }
+      ]
+    }
+  ],
+  "faults": [
+    {
+      "type": "gps_denied",
+      "target": "uav-1",
+      "trigger": { "at_s": 25 },
+      "duration_s": 60
+    }
+  ],
+  "success_criteria": [
+    { "id": "land-on-pad", "type": "land_within_radius", "agent": "uav-1", "target": [100, 80, 0], "radius_m": 3.0 },
+    { "id": "no-crash", "type": "no_crash", "agent": "uav-1" },
+    { "id": "time-budget", "type": "max_mission_time", "limit_s": 120 }
+  ]
+}

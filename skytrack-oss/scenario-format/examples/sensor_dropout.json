@@ -1,0 +1,29 @@
+{
+  "scenario_version": "0.1.0",
+  "name": "IMU sensor dropout",
+  "description": "Ground robot drives a route while its IMU drops out for 5s; it must not leave the corridor.",
+  "seed": 7,
+  "world": {
+    "origin": { "lat": 52.520008, "lon": 13.404954, "alt": 34.0 },
+    "environment": { "gps_quality": "degraded" }
+  },
+  "agents": [
+    {
+      "id": "rover-1",
+      "body": "ground_robot",
+      "start": { "position": [0, 0, 0], "heading_deg": 0 },
+      "mission": [
+        { "action": "goto", "target": [10, 0, 0], "speed_mps": 1.0 },
+        { "action": "goto", "target": [10, 5, 0], "speed_mps": 1.0 },
+        { "action": "hover", "target": [10, 5, 0], "duration_s": 5 }
+      ]
+    }
+  ],
+  "faults": [
+    { "type": "sensor_dropout", "target": "imu", "trigger": { "at_s": 6 }, "duration_s": 5 }
+  ],
+  "success_criteria": [
+    { "id": "reach-goal", "type": "reach_waypoint", "agent": "rover-1", "target": [10, 5, 0], "radius_m": 0.5 },
+    { "id": "no-crash", "type": "no_crash", "agent": "rover-1" }
+  ]
+}

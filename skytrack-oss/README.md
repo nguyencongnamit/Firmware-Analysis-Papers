@@ -13,6 +13,25 @@ This is a **monorepo of independent projects**. Each folder is a complete
 mini-repo with its own README and LICENSE, ready to be extracted into a
 standalone public repo when you announce it (see [Splitting out](#splitting-a-folder-into-its-own-repo)).
 
+Each project ships **working code**, not just docs — runnable demos and
+self-tests you can try right now:
+
+```bash
+# robot-brain: same brain flies a drone and drives a ground robot
+python robot-brain/examples/one_brain_two_bodies.py
+
+# drone-rehost: MMIO peripheral bus self-test + MAVLink mutation fuzzer
+python drone-rehost/harness/rehost.py
+python drone-rehost/fuzzer/mavlink_fuzzer.py -n 5000
+
+# scenario-format: validate the example scenarios against the schema
+pip install -r scenario-format/validator/requirements.txt
+python scenario-format/validator/validate.py scenario-format/examples/
+
+# sn360-bridge: MAVLink core in dry-run (no autopilot needed)
+python sn360-bridge/common/mavlink_bridge.py --dry-run --seconds 3
+```
+
 ## The four projects
 
 | Folder | Project | What it is | Role in the funnel |

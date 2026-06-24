@@ -1,0 +1,2 @@
+# Core bridge deps. ROS 2 (rclpy) is installed via a ROS 2 distro, not pip.
+pymavlink>=2.4

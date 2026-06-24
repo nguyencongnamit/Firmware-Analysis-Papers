@@ -1,0 +1,32 @@
+{
+  "scenario_version": "0.1.0",
+  "name": "Wind gust hold",
+  "description": "Multirotor must hold a hover within a tight geofence while a strong gust hits at t=10s.",
+  "seed": 42,
+  "world": {
+    "origin": { "lat": 37.4275, "lon": -122.1697, "alt": 9.0 },
+    "environment": {
+      "wind": { "mean_mps": [3.0, 1.0, 0.0], "gust_mps": 8.0, "gust_period_s": 5.0 },
+      "gps_quality": "nominal"
+    }
+  },
+  "agents": [
+    {
+      "id": "uav-1",
+      "body": "multirotor",
+      "start": { "position": [0, 0, 0], "heading_deg": 0 },
+      "mission": [
+        { "action": "takeoff", "target": [0, 0, 15] },
+        { "action": "hover", "target": [0, 0, 15], "duration_s": 30 },
+        { "action": "land", "target": [0, 0, 0] }
+      ]
+    }
+  ],
+  "faults": [
+    { "type": "wind_gust", "trigger": { "at_s": 10 }, "duration_s": 4 }
+  ],
+  "success_criteria": [
+    { "id": "stay-put", "type": "stay_within_geofence", "agent": "uav-1", "target": [0, 0, 15], "radius_m": 5.0 },
+    { "id": "no-crash", "type": "no_crash", "agent": "uav-1" }
+  ]
+}

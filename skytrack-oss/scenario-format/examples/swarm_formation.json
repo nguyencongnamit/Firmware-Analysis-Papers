@@ -1,0 +1,53 @@
+{
+  "scenario_version": "0.1.0",
+  "name": "Three-UAV formation",
+  "description": "Three multirotors take off, fly a shared route in a triangle formation, and land. One loses comms mid-route.",
+  "seed": 2024,
+  "world": {
+    "origin": { "lat": 47.397742, "lon": 8.545594, "alt": 488.0 },
+    "environment": {
+      "wind": { "mean_mps": [1.0, 0.0, 0.0], "gust_mps": 0.5, "gust_period_s": 10.0 },
+      "gps_quality": "nominal"
+    }
+  },
+  "agents": [
+    {
+      "id": "lead",
+      "body": "multirotor",
+      "start": { "position": [0, 0, 0], "heading_deg": 90 },
+      "mission": [
+        { "action": "takeoff", "target": [0, 0, 25] },
+        { "action": "goto", "target": [120, 0, 25], "speed_mps": 5 },
+        { "action": "land", "target": [120, 0, 0] }
+      ]
+    },
+    {
+      "id": "wing-left",
+      "body": "multirotor",
+      "start": { "position": [-5, -5, 0], "heading_deg": 90 },
+      "mission": [
+        { "action": "takeoff", "target": [-5, -5, 25] },
+        { "action": "follow", "target": [-5, -5, 0], "speed_mps": 5 },
+        { "action": "land", "target": [115, -5, 0] }
+      ]
+    },
+    {
+      "id": "wing-right",
+      "body": "multirotor",
+      "start": { "position": [-5, 5, 0], "heading_deg": 90 },
+      "mission": [
+        { "action": "takeoff", "target": [-5, 5, 25] },
+        { "action": "follow", "target": [-5, 5, 0], "speed_mps": 5 },
+        { "action": "land", "target": [115, 5, 0] }
+      ]
+    }
+  ],
+  "faults": [
+    { "type": "comms_loss", "target": "wing-right", "trigger": { "at_s": 15 }, "duration_s": 8 }
+  ],
+  "success_criteria": [
+    { "id": "lead-lands", "type": "land_within_radius", "agent": "lead", "target": [120, 0, 0], "radius_m": 2.0 },
+    { "id": "all-survive", "type": "no_crash" },
+    { "id": "time-budget", "type": "max_mission_time", "limit_s": 90 }
+  ]
+}
