@@ -41,6 +41,23 @@ python sn360-bridge/common/mavlink_bridge.py --dry-run --seconds 3
 | [`drone-rehost/`](./drone-rehost) | **drone-rehost** | Firmware rehosting/emulation harness + MAVLink fuzzer | Credibility flagship — ties to the firmware-analysis research |
 | [`scenario-format/`](./scenario-format) | **scenario-format** | Open mission/scenario interchange standard + validator | Own the format; monetize the runtime |
 
+## Documentation
+
+**Start here / session memory:** [`CLAUDE.md`](./CLAUDE.md) ·
+[`CONTEXT.md`](./CONTEXT.md) · [`BACKLOG.md`](./BACKLOG.md) ·
+[`OSS-STRATEGY.md`](./OSS-STRATEGY.md)
+
+**Platform diagrams:** [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) ·
+[`docs/JOURNEY.md`](./docs/JOURNEY.md)
+
+**Per project**, each folder carries a `CLAUDE.md` (session memory) and a `docs/`
+set: `IDEA.md`, `ARCHITECTURE.md`, `FLOW.md`, `JOURNEY.md`, `STRATEGY.md`,
+`BACKLOG.md` — all with Mermaid diagrams.
+
+> Before starting **or** clearing/compacting a session, run the refresh checklist
+> in [`CLAUDE.md`](./CLAUDE.md): re-read the memory docs, check the branch, run
+> the smoke tests, and update status + backlog.
+
 ## Priority & sequencing
 
 1. **`sn360-bridge`** first — biggest, clearest market painpoint (AirSim is
