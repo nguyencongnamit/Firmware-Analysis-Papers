@@ -1,84 +1,83 @@
-# Platform architecture — skytrack-oss × sn360
+# Platform & ecosystem architecture
 
-How the four open projects fit together and where the proprietary **sn360** hub
-takes over. This is the bird's-eye view; each project's own
-`docs/ARCHITECTURE.md` has the detail.
+How the open projects fit together and where the proprietary **sn360** hub takes
+over. ASCII (no renderer). Per-project `docs/ARCHITECTURE.md` files have detail;
+[`DIAGRAMS.md`](./DIAGRAMS.md) collects every diagram in one place.
 
-## The open rim and the closed hub
+## Ecosystem layers
 
-```mermaid
-flowchart TB
-    subgraph OPEN["Open rim (Apache-2.0, this monorepo)"]
-        SF["scenario-format<br/>portable test scenarios"]
-        RB["robot-brain<br/>perceive → plan → act + HAL"]
-        BR["sn360-bridge<br/>engine ↔ MAVLink/ROS 2"]
-        DR["drone-rehost<br/>firmware emulation + fuzzer"]
-    end
-    subgraph HUB["Closed hub — sn360 (proprietary)"]
-        ENG["Unity/Unreal engine<br/>photoreal worlds"]
-        BRAIN["hosted large-model brain<br/>fleet + evals"]
-        MODELS["hi-fidelity sensor/physics models"]
-        CLOUD["scaled cloud simulation"]
-    end
-
-    SF --> RB --> BR --> ENG
-    DR -. SITL firmware target .-> BR
-    BR --> CLOUD
-    RB --> BRAIN
-    SF --> CLOUD
-    DR --> MODELS
-    ENG --> MODELS
-
-    classDef open fill:#e6f4ff,stroke:#0366d6;
-    classDef hub fill:#fff0e6,stroke:#d9480f;
-    class SF,RB,BR,DR open;
-    class ENG,BRAIN,MODELS,CLOUD hub;
+```
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  COMMUNITY    docs site · examples gallery · tutorials · RFCs ·        │
+  │               Discord/forum · firmware-papers awareness hub            │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  PILLARS      sn360-bridge   robot-brain   drone-rehost   scenario-fmt │
+  │               (connect)      (intelligence)(security)     (tests)      │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  STANDARDS    scenario spec · telemetry/log · model API ·              │
+  │               brain↔HAL contract · result/report schema               │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  CORE         skytrack-core: ENU frame · message types · units · utils │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  ASSETS/DATA  datasets · benchmarks+leaderboard · model zoo ·          │
+  │               scenario library · body packs                           │
+  └──────────────────────────────────────────────────────────────────────┘
+                    every layer ─────────────▶  sn360 (paid hub)
 ```
 
-## End-to-end data flow (a scenario run)
+**Keystone:** `skytrack-core` (planned) is the stable foundation every pillar and
+every third-party product sits on. It's what makes the four pillars *one
+ecosystem* instead of four loose repos. Build it first.
 
-```mermaid
-sequenceDiagram
-    participant SF as scenario-format
-    participant RB as robot-brain
-    participant BR as sn360-bridge
-    participant ENG as Engine (Unity/Unreal)
-    participant FW as drone-rehost (optional SITL firmware)
+## Open rim, closed hub
 
-    SF->>RB: load scenario (mission, faults, criteria)
-    loop control loop
-        ENG->>BR: sensor frame (ENU)
-        BR->>RB: Observation
-        RB->>RB: perceive → plan → act
-        RB->>BR: Command (velocity/goto)
-        BR->>ENG: actuator setpoint (engine frame)
-        opt firmware-in-the-loop
-            BR->>FW: MAVLink
-            FW->>BR: parsed control output
-        end
-    end
-    RB->>SF: evaluate success_criteria → pass/fail
 ```
+            OPEN RIM  (Apache-2.0 · skytrack-oss)
+  ┌─────────────────────────────────────────────────────────────┐
+  │  scenario-format ─▶ robot-brain ─▶ sn360-bridge ─▶ engine I/O │
+  │        drone-rehost ····· SITL firmware target ····▶         │
+  └───────┬──────────────┬───────────────┬───────────────┬───────┘
+          ▼              ▼               ▼               ▼
+  ┌─────────────────────────────────────────────────────────────┐
+  │              CLOSED HUB — sn360 (proprietary)                 │
+  │  photoreal worlds · hosted big-model brain · hi-fi models ·   │
+  │  scaled cloud simulation · fleet · analytics                  │
+  └─────────────────────────────────────────────────────────────┘
+```
+
+## Dependency map
+
+```
+                          ┌───────────────────────────┐
+                          │       skytrack-core       │ ◀── everything builds on this
+                          └─────┬─────┬─────┬─────┬─────┘
+              ┌─────────────────┘     │     │     └─────────────────┐
+              ▼                       ▼     ▼                       ▼
+       scenario-format          robot-brain   sn360-bridge     drone-rehost
+              │ feeds tests          │ commands    │ MAVLink         │ SITL target
+              └─────────────────────▶ ◀──binds HAL─┘ ◀───────────────┘
+```
+
+## Shared conventions (the contract every piece honors)
+
+| Concern | Convention |
+|---------|-----------|
+| Frame | ENU meters (x=East, y=North, z=Up); convert at edges (MAVLink NED, Unity Y-up, Unreal Z-up/cm) |
+| Transport | MAVLink (pymavlink) + ROS 2 / DDS, centralized in `sn360-bridge/common` (→ `skytrack-core`) |
+| Interfaces | `Brain`, `HAL`, `Peripheral`, `IBridgeTransport`, scenario JSON Schema |
+| License | Apache-2.0 everywhere |
+| Funnel | each project useful alone; scale/fidelity/fleet → sn360 |
 
 ## One platform, two bodies
 
-```mermaid
-flowchart LR
-    BRAIN["robot-brain<br/>(one brain)"]
-    BRAIN --> DH["DroneHAL"] --> DRONE["SkyTrack drone<br/>(product focus)"]
-    BRAIN --> GH["GroundRobotHAL"] --> ROVER["ground robot<br/>(Vector testbed/demo)"]
-    DRONE --> SN[(sn360)]
-    ROVER --> SN
+```
+   robot-brain (one brain)
+        ├─ DroneHAL ──────▶ SkyTrack drone   (product focus)
+        └─ GroundRobotHAL ─▶ ground robot     (Vector testbed / demo / 2nd fw target)
+                 both share core + sim + firmware toolchain → both funnel to sn360
 ```
 
-The same brain, sim, and firmware toolchain serve both bodies. The drone is the
-product; the ground robot is the cheap, safe testbed and the "look, it
-generalizes" demo.
+## Extension points (third-party products plug in here)
 
-## Shared conventions
-
-- **Canonical frame:** ENU meters; edges convert (MAVLink NED, Unity Y-up,
-  Unreal Z-up/cm).
-- **Transport:** MAVLink (pymavlink) and ROS 2 / DDS, centralized in
-  `sn360-bridge/common`.
-- **Funnel:** each project is useful alone; scale/fidelity/fleet → sn360.
+See [`EXTENDING.md`](./EXTENDING.md). Implement one seam, plug in, nothing else
+changes — students extend a corner, researchers build whole products.

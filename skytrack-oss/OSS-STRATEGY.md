@@ -75,3 +75,27 @@ not a second product.
 - **Apache-2.0** across the board (permissive + patent grant → max adoption).
 - Each README carries sn360 branding and a clear "scale this up → sn360" CTA.
 - Keep proprietary value (engine, cloud brain, hi-fi models) out of every repo.
+
+## From projects to an ecosystem
+
+The four pillars are one **ecosystem** in layers — community / pillars /
+interchange standards / **`skytrack-core`** / assets-data — so every audience has
+a door and a path to sn360. Full design in [`ECOSYSTEM.md`](./ECOSYSTEM.md);
+diagrams in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md).
+
+Three principles make it an ecosystem, not just repos:
+
+1. **`skytrack-core` is the keystone.** Shared ENU frame, message types, and
+   transport unify the pillars and give third parties one stable foundation.
+   Build it first.
+2. **Build-without-permission.** Small seams (`Brain`, `HAL`, `Peripheral`,
+   `IBridgeTransport`, scenario schema) let students extend a corner and
+   researchers build whole products. Apache-2.0 permits commercial third-party
+   products. This openness *is* the growth engine. Guide: `docs/EXTENDING.md`.
+3. **A real, not artificial, ceiling.** Every open path is genuinely useful but
+   tops out where sn360 begins (photoreal, hosted big brain, scaled fuzzing,
+   analytics). If the ceiling isn't real, the funnel breaks.
+
+The flywheel: more scenarios → more data → better brains → harder scenarios;
+rehost crashes harden the whole stack. Each turn raises the others — and every
+arrow eventually points at sn360.

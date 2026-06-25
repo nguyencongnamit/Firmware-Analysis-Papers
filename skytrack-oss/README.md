@@ -45,10 +45,13 @@ python sn360-bridge/common/mavlink_bridge.py --dry-run --seconds 3
 
 **Start here / session memory:** [`CLAUDE.md`](./CLAUDE.md) ·
 [`CONTEXT.md`](./CONTEXT.md) · [`BACKLOG.md`](./BACKLOG.md) ·
-[`OSS-STRATEGY.md`](./OSS-STRATEGY.md)
+[`OSS-STRATEGY.md`](./OSS-STRATEGY.md) · [`ECOSYSTEM.md`](./ECOSYSTEM.md)
 
-**Platform diagrams:** [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) ·
-[`docs/JOURNEY.md`](./docs/JOURNEY.md)
+**Platform docs (ASCII diagrams):** [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) ·
+[`docs/FLOW.md`](./docs/FLOW.md) · [`docs/JOURNEY.md`](./docs/JOURNEY.md) ·
+[`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md) ·
+[`docs/IDEAS-OVERVIEW.md`](./docs/IDEAS-OVERVIEW.md) ·
+[`docs/EXTENDING.md`](./docs/EXTENDING.md)
 
 **Per project**, each folder carries a `CLAUDE.md` (session memory) and a `docs/`
 set: `IDEA.md`, `ARCHITECTURE.md`, `FLOW.md`, `JOURNEY.md`, `STRATEGY.md`,

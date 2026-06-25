@@ -38,6 +38,24 @@ understands *why*, not just *what*. Update when a material decision changes.
    self-tests/demos (verified). Production wiring is marked TODO in-code and in
    each `docs/BACKLOG.md`.
 
+7. **Ecosystem for all audiences.** The four pillars are framed as **one
+   ecosystem** with layers (community / pillars / interchange standards /
+   `skytrack-core` / assets-data), so every audience has a door in and a path to
+   sn360. See `ECOSYSTEM.md`. Each audience→entry→ceiling→sn360 mapping is in the
+   ecosystem audience matrix.
+8. **`skytrack-core` is the keystone.** Extract the shared ENU frame, message
+   types, units, and MAVLink/ROS 2 helpers (currently duplicated across pillars)
+   into one library. This is what turns "4 repos" into "1 ecosystem." Build first.
+9. **Abstraction is a first-class goal: build-without-permission.** The design is
+   intentionally built on small seams (`Brain`, `HAL`, `Peripheral`,
+   `IBridgeTransport`, scenario schema) so students extend a corner and
+   researchers build whole products. Apache-2.0 permits commercial third-party
+   products. Guide: `docs/EXTENDING.md`; proof: the obstacle-avoid Brain example.
+   Status honesty: ready for student/research/prototype today; commercial product
+   needs the in-code TODOs + `skytrack-core` done.
+10. **Diagrams: ASCII, not Mermaid.** User preference. New top-level docs use
+    ASCII. Per-project `docs/` still hold Mermaid — converting them is a backlog item.
+
 ## Open questions / revisit later
 
 - Create real separate private GitHub repos when repo-creation scope/an org is
