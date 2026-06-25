@@ -1,0 +1,46 @@
+// skytrack-oss — ecosystem dependency & funnel (Graphviz)
+// Render:  dot -Tsvg ecosystem.dot -o ecosystem.svg
+digraph ecosystem {
+  rankdir=TB;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  // Keystone
+  core [label="skytrack-core\n(ENU frame · message types · transport)",
+        fillcolor="#fff3bf", color="#e0a800"];
+
+  // Pillars (open rim)
+  node [fillcolor="#e6f4ff", color="#0366d6"];
+  sf  [label="scenario-format\n(portable tests)"];
+  rb  [label="robot-brain\n(perceive → plan → act + HAL)"];
+  br  [label="sn360-bridge\n(engine ↔ MAVLink/ROS 2)"];
+  dr  [label="drone-rehost\n(firmware emulation + fuzzer)"];
+
+  // Engine + hub
+  eng [label="Unity / Unreal engine", fillcolor="#e9ecef", color="#868e96"];
+  sn  [label="sn360\n(paid hub: photoreal · big-model brain ·\nhi-fi models · cloud · fleet)",
+       shape=box3d, fillcolor="#fff0e6", color="#d9480f"];
+
+  // Core underpins all pillars
+  core -> sf  [label="builds on"];
+  core -> rb  [label="builds on"];
+  core -> br  [label="builds on"];
+  core -> dr  [label="builds on"];
+
+  // Pillar relationships
+  sf -> rb [label="missions / faults"];
+  rb -> br [label="commands (binds HAL)"];
+  br -> eng [label="MAVLink / ROS 2"];
+  dr -> br [label="SITL firmware target", style=dashed];
+
+  // Funnel to sn360
+  edge [color="#d9480f", fontcolor="#d9480f", style=bold];
+  br -> sn [label="scale / photoreal"];
+  rb -> sn [label="hosted brain / fleet"];
+  sf -> sn [label="runs + analytics"];
+  dr -> sn [label="scaled fuzzing"];
+  eng -> sn [style=invis];
+
+  { rank=same; sf; rb; br; dr; }
+}

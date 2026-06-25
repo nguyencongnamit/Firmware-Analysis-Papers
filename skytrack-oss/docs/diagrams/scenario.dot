@@ -1,0 +1,31 @@
+// scenario-format — object model + author/run pipeline (Graphviz)
+// Render:  dot -Tsvg scenario.dot -o scenario.svg
+digraph scenario {
+  rankdir=LR;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  subgraph cluster_model {
+    label="Object model"; style="rounded,filled"; fillcolor="#f8f9fa"; color="#adb5bd";
+    node [fillcolor="#e6f4ff", color="#0366d6"];
+    scn [label="Scenario\nscenario_version · seed"];
+    world [label="World / Environment\nwind · gps_quality"];
+    agent [label="Agent\nid · body"];
+    step  [label="MissionStep\naction · target"];
+    fault [label="Fault\ntype · at_s"];
+    crit  [label="Criterion\ntype · radius_m"];
+    scn -> world; scn -> agent; agent -> step; scn -> fault; scn -> crit;
+  }
+
+  author [label="author scenario.json", fillcolor="#fff3bf", color="#e0a800"];
+  val    [label="validate.py\nJSON Schema + lint", fillcolor="#ebfbee", color="#0ca678"];
+  player [label="reference player — TODO\ndrives sn360-bridge", fillcolor="#ffe3e3", color="#e03131", style="rounded,filled,dashed"];
+  report [label="evaluate criteria\n→ pass/fail report", fillcolor="#f3f0ff", color="#7048e8"];
+  sn     [label="sn360\nscale + analytics", shape=box3d, fillcolor="#fff0e6", color="#d9480f"];
+
+  author -> val;
+  val -> author [label="errors", style=dashed];
+  val -> player [label="valid"];
+  player -> report -> sn;
+}

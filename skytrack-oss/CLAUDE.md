@@ -63,8 +63,10 @@ python sn360-bridge/common/mavlink_bridge.py --dry-run --seconds 3
 ## Conventions
 
 - **Frame:** ENU meters; convert at edges (MAVLink NED, Unity Y-up, Unreal Z-up/cm).
-- **Diagrams:** ASCII preferred (user asked for no Mermaid). New top-level docs are
-  ASCII; per-project `docs/` still contain Mermaid (not yet converted — see backlog).
+- **Diagrams:** three formats available — ASCII (`docs/DIAGRAMS.md`, preferred for
+  in-repo), rendered Graphviz SVG/PNG (`docs/diagrams/`, for decks/site), and
+  Mermaid (per-project `docs/`, not yet converted — see backlog). Regenerate
+  images: `cd docs/diagrams && for f in *.dot; do dot -Tsvg $f -o ${f%.dot}.svg; done`.
 - **Funnel:** every README/doc ends with a "scale this up → sn360" CTA.
 - **Branch:** develop on `claude/skytrack-oss-ideas-0ivndv`. Don't push elsewhere.
 - **License:** Apache-2.0 throughout.

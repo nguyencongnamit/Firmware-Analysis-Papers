@@ -1,0 +1,32 @@
+// sn360-bridge — component architecture (Graphviz)
+// Render:  dot -Tsvg bridge.dot -o bridge.svg
+digraph bridge {
+  rankdir=LR;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  subgraph cluster_fs {
+    label="Flight stack"; style="rounded,filled"; fillcolor="#f1f3f5"; color="#adb5bd";
+    px4 [label="PX4 / ArduPilot\nSITL", fillcolor="#e6f4ff", color="#0366d6"];
+    ros [label="ROS 2 / micro-ROS\n(DDS)", fillcolor="#e6f4ff", color="#0366d6"];
+  }
+  subgraph cluster_common {
+    label="common/  (ENU canonical)"; style="rounded,filled"; fillcolor="#fff9db"; color="#e0a800";
+    tr   [label="transport\nmavlink_bridge.py\nros2_bridge.py", fillcolor="white"];
+    conv [label="frame conversion\nNED ◀▶ ENU + clock sync", fillcolor="white"];
+  }
+  subgraph cluster_engine {
+    label="Game engine plugin"; style="rounded,filled"; fillcolor="#ebfbee"; color="#0ca678";
+    unity  [label="unity/ (C#)\nDroneSensorPublisher\nMotorSubscriber", fillcolor="white"];
+    unreal [label="unreal/ (C++)\nUSn360BridgeComponent", fillcolor="white"];
+    seam   [label="IBridgeTransport seam\n(LogTransport → UDP/ROS 2)", fillcolor="#f8f0fc"];
+  }
+
+  px4 -> tr [label="MAVLink", dir=both];
+  ros -> tr [label="DDS", dir=both];
+  tr -> conv [dir=both];
+  conv -> seam [label="local socket", dir=both];
+  seam -> unity;
+  seam -> unreal;
+}

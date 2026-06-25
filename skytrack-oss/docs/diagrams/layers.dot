@@ -1,0 +1,25 @@
+// skytrack-oss — ecosystem layers (Graphviz, open rim → closed hub)
+// Render:  dot -Tsvg layers.dot -o layers.svg
+digraph layers {
+  rankdir=TB;
+  bgcolor="white";
+  node [shape=box, style="filled", fontname="Helvetica", fontsize=11, width=5.2];
+  edge [style=invis];
+
+  community [label="COMMUNITY  ·  docs site · examples gallery · tutorials · RFCs · papers hub",
+             fillcolor="#e6fcf5", color="#0ca678"];
+  pillars   [label="PILLARS  ·  sn360-bridge · robot-brain · drone-rehost · scenario-format",
+             fillcolor="#e6f4ff", color="#0366d6"];
+  standards [label="STANDARDS  ·  scenario spec · telemetry · model API · brain↔HAL · report schema",
+             fillcolor="#f3f0ff", color="#7048e8"];
+  corel     [label="CORE  ·  skytrack-core (ENU frame · types · units · MAVLink/ROS 2 utils)",
+             fillcolor="#fff3bf", color="#e0a800"];
+  assets    [label="ASSETS / DATA  ·  datasets · benchmarks+leaderboard · model zoo · body packs",
+             fillcolor="#fff0f6", color="#d6336c"];
+
+  community -> pillars -> standards -> corel -> assets;
+
+  hub [label="sn360  (paid hub)", shape=box3d, fillcolor="#fff0e6", color="#d9480f", width=5.2];
+  edge [style=bold, color="#d9480f"];
+  assets -> hub [label="every layer funnels up", fontname="Helvetica", fontcolor="#d9480f"];
+}

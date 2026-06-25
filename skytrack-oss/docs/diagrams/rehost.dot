@@ -1,0 +1,32 @@
+// drone-rehost — firmware rehosting + MMIO dispatch (Graphviz)
+// Render:  dot -Tsvg rehost.dot -o rehost.svg
+digraph rehost {
+  rankdir=TB;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  fw   [label="firmware.elf\n(Cortex-M flight controller)", fillcolor="#e9ecef", color="#868e96"];
+  qemu [label="qemu-system-arm\nrun_qemu.sh + gdb stub", fillcolor="#e6f4ff", color="#0366d6"];
+  hook [label="MMIO hook\n(gdb / Unicorn)  — TODO", fillcolor="#ffe3e3", color="#e03131", style="rounded,filled,dashed"];
+  bus  [label="harness/rehost.py\nMmioBus dispatch", fillcolor="#fff3bf", color="#e0a800"];
+
+  fw -> qemu [label="boots under"];
+  qemu -> hook [label="MMIO fault"];
+  hook -> bus [label="dispatch"];
+
+  node [fillcolor="#ebfbee", color="#0ca678"];
+  imu [label="IMU @0x40004000\nWHO_AM_I 0x68"];
+  gps [label="GPS @0x40005000\nUBX · fix_ok"];
+  esc [label="ESC @0x40006000\nPWM duty"];
+  bus -> imu; bus -> gps; bus -> esc;
+
+  oracle [label="sim / scenario\n(ground-truth oracle)", fillcolor="#f3f0ff", color="#7048e8"];
+  oracle -> imu [label="set_truth", style=dashed];
+  oracle -> gps [label="fix_ok", style=dashed];
+
+  fuzz [label="fuzzer/mavlink_fuzzer.py\n+ corpus seeds", fillcolor="#fff0f6", color="#d6336c"];
+  fuzz -> fw [label="MAVLink frames"];
+
+  { rank=same; imu; gps; esc; }
+}

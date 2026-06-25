@@ -2,6 +2,12 @@
 
 All ecosystem diagrams in one place. ASCII by preference (portable, no renderer).
 
+> **Rendered (image) versions:** a non-Mermaid, non-ASCII set lives in
+> [`diagrams/`](./diagrams/) — Graphviz `DOT` sources rendered to `SVG` (web/docs)
+> and `PNG` (slides). See [`diagrams/README.md`](./diagrams/README.md). Use those
+> when you need an image for a deck or site; use the ASCII below for in-repo/GitHub
+> reading.
+
 ## 1. Ecosystem layers
 
 ```

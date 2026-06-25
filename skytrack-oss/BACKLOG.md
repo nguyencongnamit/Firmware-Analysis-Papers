@@ -48,6 +48,8 @@ Status legend: ✅ done · 🟡 in progress · ⬜ todo.
   `docs/IDEAS-OVERVIEW.md`, top-level `docs/FLOW.md`; ASCII `docs/ARCHITECTURE.md`
   + `docs/JOURNEY.md`.
 - ✅ Extension proof: `robot-brain/examples/custom_brain_obstacle_avoid.py` (verified).
+- ✅ Rendered (non-Mermaid/non-ASCII) diagrams: Graphviz DOT → SVG+PNG in
+  `docs/diagrams/` (ecosystem, layers, bridge, robot-brain, rehost, scenario).
 
 ## Cross-project dependency
 

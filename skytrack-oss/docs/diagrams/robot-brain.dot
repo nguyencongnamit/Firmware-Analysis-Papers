@@ -1,0 +1,28 @@
+// robot-brain — one brain, many bodies (Graphviz)
+// Render:  dot -Tsvg robot-brain.dot -o robot-brain.svg
+digraph robotbrain {
+  rankdir=TB;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+
+  brain [label="Brain (abstract)\nperceive → plan → act\n└ ReferenceBrain / ObstacleAvoidBrain",
+         fillcolor="#f3f0ff", color="#7048e8"];
+  hal   [label="HAL (abstract)\nread_sensors · send_commands · goal_reached",
+         fillcolor="#fff3bf", color="#e0a800"];
+
+  brain -> hal [label="run() loop drives", style=bold];
+
+  node [fillcolor="#e6f4ff", color="#0366d6"];
+  sim   [label="SimHAL\n(pure sim · CI/dev)"];
+  drone [label="DroneHAL\n(multirotor)"];
+  rover [label="GroundRobotHAL\n(Vector testbed/demo)"];
+  hal -> sim;
+  hal -> drone;
+  hal -> rover;
+
+  bridge [label="sn360-bridge\n(MAVLink/ROS 2)", fillcolor="#ebfbee", color="#0ca678"];
+  drone -> bridge [label="binds", style=dashed];
+
+  { rank=same; sim; drone; rover; }
+}
